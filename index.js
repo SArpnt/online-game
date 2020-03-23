@@ -1,4 +1,4 @@
-var port = processes.env.PORT||6980
+var port = process.env.PORT || 6980
 // Dependencies
 var express = require('express')
 var http = require('http')
@@ -11,7 +11,7 @@ app.get('/', function (request, response) {
 	response.sendFile(path.join(__dirname, 'index.html'))
 })// Starts the server.
 server.listen(port, function () {
-	console.log('Starting server on port '+port)
+	console.log('Starting server on port ' + port)
 })
 // Add the WebSocket handlers
 io.on('connection', function (socket) {
