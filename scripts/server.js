@@ -1,23 +1,31 @@
 module.exports = function (io) {
+	var playerData = {}
 	io.on('connection', socket => {
 		console.log(`Client join: ${socket.id}`)
+		playerData[socket.id] = {
+			mouse: { x: 0, y: 0 }
+		}
 		socket.on('disconnect', () => {
 			console.log(`Client left: ${socket.id}`)
+			delete playerData[socket.id]
 		})
 		//socket.on('ping', () => {
-		//	io.sockets.emit('ping')
+		//	io.emit('ping')
 		//})
 		socket.on('message', d => {
 			if (typeof d == 'string')
-				io.sockets.emit('message', d)
+				io.emit('message', d)
 		})
 		socket.on('selfmessage', d => {
 			if (typeof d == 'string')
 				socket.emit('message', d)
 		})
 		socket.on('mouse', d => {
-			if (typeof d == 'string')
-				io.sockets.emit('message', d)
+			playerData[socket.id].mouse = d
 		})
 	})
+	function update() {
+		io.emit('playerData', playerData)
+	}
+	setInterval(update, 8) //125 tps
 }
