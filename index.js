@@ -5,18 +5,11 @@ var http = require('http')
 var path = require('path')
 var socketIO = require('socket.io'); var app = express()
 var server = http.Server(app)
-var io = socketIO(server); app.set('port', port)
-app.use('/static', express.static(__dirname + '/static'))// Routing
-app.get('/', function (request, response) {
-	response.sendFile(path.join(__dirname, 'index.html'))
-})// Starts the server.
+var io = socketIO(server)
+app.set('port', port)
+app.use('/', express.static(__dirname + '/')) //sends files on request
 server.listen(port, function () {
-	console.log('Starting server on port ' + port)
+	console.log(`Starting server on port: ${port}, directory: ${__dirname}`)
 })
-// Add the WebSocket handlers
-io.on('connection', function (socket) {
-	socket.on('message', d => {
-		if (typeof d == 'string')
-			io.sockets.emit('message', d)
-	})
-})
+// Run server
+require('./scripts/server.js')(io)
