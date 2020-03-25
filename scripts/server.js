@@ -1,6 +1,6 @@
 "use strict"
 var isObject = x => x !== null && typeof x === 'object'
-var playerData
+var playerData = {}
 class player {
 	constructor() {
 		this.mouse = { x: 0, y: 0 }
@@ -24,8 +24,6 @@ function verifyPlayerData(data, old) {
 }
 function main(io, anticheat) {
 
-	playerData = {}
-
 	io.on('connection', socket => {
 		console.log(`Client join: ${socket.id}`)
 		playerData[socket.id] = new player
@@ -35,9 +33,6 @@ function main(io, anticheat) {
 			console.log(`Client left: ${socket.id}`)
 			delete playerData[socket.id]
 		})
-		//socket.on('ping', () => {
-		//	io.emit('ping')
-		//})
 		socket.on('message', d => {
 			if (typeof d == 'string')
 				io.emit('message', d)

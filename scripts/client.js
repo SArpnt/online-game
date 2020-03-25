@@ -1,6 +1,6 @@
 "use strict"
 var socket = io()
-const canvas = document.getElementById('canvas')
+const canvas = $('#canvas')[0]
 const ctx = canvas.getContext('2d')
 
 var init
@@ -19,6 +19,9 @@ function init(data) {
 
 	socket.on('playerData', function (data) {
 		playerData = data
+	})
+	socket.on('pong', function (ms) {
+		$('#ping')[0].innerHTML = ms
 	})
 	canvas.onmousemove = ({ x, y }) => {
 		x -= canvas.offsetLeft
@@ -47,18 +50,6 @@ function init(data) {
 		}
 		requestAnimationFrame(draw)
 	}
-	/*
-	function ping() {
-		let pingTime = performance.now()
-		socket.emit('ping')
-		socket.on('ping', function () {
-			if (pingTime) {
-				console.log('ping: ' + (performance.now() - pingTime))
-				pingTime = false
-			}
-		})
-	}
-	*/
 }
 
 socket.on('playerData', init)
