@@ -13,12 +13,8 @@ function verifyPlayerData(data, old) {
 		if (data.mouse.x) old.mouse.x = data.mouse.x
 		if (data.mouse.y) old.mouse.y = data.mouse.y
 	}
-	{
-		let a = $('div')
-		a.style.borderColor = data.color
-		if (a.style.borderColor) {
-			old.color = data.color
-		}
+	if (/^#[0-9a-f]{6}$/i.exec(data.color)) {
+		old.color = data.color
 	}
 	if (isObject(data.size)) {
 		if (typeof data.size.x == "number") old.size.x = data.size.x
