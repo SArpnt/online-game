@@ -1,10 +1,17 @@
 module.exports = function (io) {
+	
+	const playerDataDefault = {
+		mouse: { x: 0, y: 0 },
+		color: '#ffffff',
+		size: { x: 10, y: 10 }
+	}
 	var playerData = {}
+
 	io.on('connection', socket => {
 		console.log(`Client join: ${socket.id}`)
-		playerData[socket.id] = {
-			mouse: { x: 0, y: 0 }
-		}
+		playerData[socket.id] = playerDataDefault
+		socket.emit('init', playerData)
+
 		socket.on('disconnect', () => {
 			console.log(`Client left: ${socket.id}`)
 			delete playerData[socket.id]
@@ -20,8 +27,8 @@ module.exports = function (io) {
 			if (typeof d == 'string')
 				socket.emit('message', d)
 		})
-		socket.on('mouse', d => {
-			playerData[socket.id].mouse = d
+		socket.on('updateData', data => {
+			playerData[socket.id] = data
 		})
 	})
 	function update() {
