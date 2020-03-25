@@ -1,15 +1,38 @@
-module.exports = function (io) {
-	
-	const playerDataDefault = {
-		mouse: { x: 0, y: 0 },
-		color: '#ffffff',
-		size: { x: 10, y: 10 }
+"use strict"
+var isObject = x => x !== null && typeof x === 'object'
+var playerData
+class player {
+	constructor() {
+		this.mouse = { x: 0, y: 0 }
+		this.color = '#ffffff'
+		this.size = { x: 10, y: 10 }
 	}
-	var playerData = {}
+}
+function verifyPlayerData(data, old) {
+	if (isObject(data.mouse)) {
+		if (data.mouse.x) old.mouse.x = data.mouse.x
+		if (data.mouse.y) old.mouse.y = data.mouse.y
+	}
+	{
+		let a = $('div')
+		a.style.borderColor = data.color
+		if (a.style.borderColor) {
+			old.color = data.color
+		}
+	}
+	if (isObject(data.size)) {
+		if (typeof data.size.x == "number") old.size.x = data.size.x
+		if (typeof data.size.x == "number") old.size.y = data.size.y
+	}
+	return { data: old }
+}
+function main(io, anticheat) {
+
+	playerData = {}
 
 	io.on('connection', socket => {
 		console.log(`Client join: ${socket.id}`)
-		playerData[socket.id] = playerDataDefault
+		playerData[socket.id] = new player
 		socket.emit('init', playerData)
 
 		socket.on('disconnect', () => {
@@ -28,7 +51,12 @@ module.exports = function (io) {
 				socket.emit('message', d)
 		})
 		socket.on('updateData', data => {
-			playerData[socket.id] = data
+			if (anticheat) {
+				let pd = verifyPlayerData(data, playerData[socket.id])
+				playerData[socket.id] = pd.data
+			}
+			else
+				playerData[socket.id] = data
 		})
 	})
 	function update() {

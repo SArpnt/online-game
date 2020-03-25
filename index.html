@@ -2,11 +2,13 @@
 
 <head>
 	<title>A Multiplayer Game</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
 	<canvas id="canvas" width="800" height="500" style="cursor:none"></canvas>
+	<div>FPS: <span id="fps"></span></div>
 </body>
 <script src="/scripts/client.js"></script>
 
